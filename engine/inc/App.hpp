@@ -6,6 +6,7 @@ using sf::RenderWindow;
 using sf::VideoMode;
 using sf::Event;
 using sf::Color;
+using sf::Vector2u;
 
 #include <memory>
 using std::make_unique;

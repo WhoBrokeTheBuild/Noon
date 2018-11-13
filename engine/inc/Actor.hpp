@@ -8,6 +8,9 @@ using sf::RenderWindow;
 using sf::Vector2f;
 using sf::Event;
 
+#include <string>
+using std::string;
+
 SCRIPT_CLASS(Actor)
 class Actor : public IScriptClass
 {
@@ -18,6 +21,8 @@ public:
     virtual void Update() { }
     virtual void Draw(RenderWindow * ctx) { }
     virtual void HandleEvent(Event * evt) { }
+
+    string GetName() { return "Actor"; }
 
     //SCRIPT_MEMBER(Actor, GetPosition, "Vector2f GetPosition()")
     virtual Vector2f GetPosition() {

@@ -71,3 +71,14 @@ ELSE()
 		sfml-window
 	)
 ENDIF()
+
+TARGET_INCLUDE_DIRECTORIES(
+    ${_ENGINE_TARGET} PUBLIC
+    /usr/include/python3.7m
+    /usr/include/x86_64-linux-gnu/python3.7m
+)
+
+TARGET_LINK_LIBRARIES(
+    ${_ENGINE_TARGET}
+    python3.7m
+)

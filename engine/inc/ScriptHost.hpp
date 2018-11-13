@@ -7,6 +7,8 @@ using std::string;
 #include <vector>
 using std::vector;
 
+class Actor;
+
 class ScriptHost
 {
 public:
@@ -17,6 +19,8 @@ public:
     bool LoadFile(const string& filename);
 
     void Run();
+
+    void SetOwner(Actor *);
 
 private:
 

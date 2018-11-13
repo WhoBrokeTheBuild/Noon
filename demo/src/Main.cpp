@@ -23,7 +23,8 @@ public:
         _shape.setSize(Vector2f(50.0f, 50.0f));
         _shape.setFillColor(Color::Red);
 
-        _script.LoadFile("assets/test.as");
+        _script.SetOwner(this);
+        _script.LoadFile("assets/test.py");
 
         SetRotation(45.0f);
         _script.Run();
