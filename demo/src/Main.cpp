@@ -23,19 +23,6 @@ public:
         _shape.setSize(Vector2f(50.0f, 50.0f));
         _shape.setFillColor(Color::Red);
 
-        asIScriptEngine * as = _script.GetEngine();
-
-        as->RegisterObjectType("Player", 0, asOBJ_REF);
-        as->RegisterObjectBehaviour("Player", asBEHAVE_ADDREF, "void f()", asMETHOD(Player,Script_AddRef), asCALL_THISCALL);
-        as->RegisterObjectBehaviour("Player", asBEHAVE_RELEASE, "void f()", asMETHOD(Player,Script_Release), asCALL_THISCALL);
-
-        as->RegisterObjectMethod("Actor", "Player@ opCast()", asFUNCTION((ScriptCast<Actor,Player>)), asCALL_CDECL_OBJLAST);
-        as->RegisterObjectMethod("Player", "Actor@ opImplCast()", asFUNCTION((ScriptCast<Player,Actor>)), asCALL_CDECL_OBJLAST);
-        as->RegisterObjectMethod("Actor", "const Player@ opCast() const", asFUNCTION((ScriptCast<Actor,Player>)), asCALL_CDECL_OBJLAST);
-        as->RegisterObjectMethod("Player", "const Actor@ opImplCast() const", asFUNCTION((ScriptCast<Player,Actor>)), asCALL_CDECL_OBJLAST);
-
-        as->RegisterGlobalProperty("Player this", this);
-
         _script.LoadFile("assets/test.as");
 
         SetRotation(45.0f);

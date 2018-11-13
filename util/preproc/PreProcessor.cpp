@@ -32,7 +32,7 @@ struct Type {
 };
 
 ostream & operator << (ostream &out, const Type& value) {
-    out << "    as->RegisterObjectType(\"" << value.Name << "\", sizeof(" << value.Name << "), asOBJ_VALUE | asOBJ_POD);\n";
+    out << "";
     return out;
 }
 
@@ -41,9 +41,7 @@ struct Class {
 };
 
 ostream & operator << (ostream &out, const Class& value) {
-    out << "    as->RegisterObjectType(\"" << value.Name << "\", 0, asOBJ_REF);\n";
-    out << "    as->RegisterObjectBehaviour(\"" << value.Name << "\", asBEHAVE_ADDREF, \"void f()\", asMETHOD(" << value.Name << ",Script_AddRef), asCALL_THISCALL);\n";
-    out << "    as->RegisterObjectBehaviour(\"" << value.Name << "\", asBEHAVE_RELEASE, \"void f()\", asMETHOD(" << value.Name << ",Script_Release), asCALL_THISCALL);\n";
+    out << "";
     return out;
 }
 
@@ -53,7 +51,7 @@ struct Function {
 };
 
 ostream & operator << (ostream &out, const Function& value) {
-    out << "    as->RegisterGlobalFunction(" << value.Definition << ", asFUNCTION(" << value.Name << "), asCALL_CDECL);\n";
+    out << "";
     return out;
 }
 
@@ -64,7 +62,7 @@ struct Method {
 };
 
 ostream & operator << (ostream &out, const Method& method) {
-    out << "    as->RegisterObjectMethod(\"" << method.Class << "\", " << method.Definition << ", asMETHOD(" << method.Class << "," << method.Name << "), asCALL_THISCALL);\n";
+    out << "";
     return out;
 }
 
@@ -103,8 +101,6 @@ int main(int argc, char** argv) {
     vector<Class> classes;
     vector<Function> functions;
     vector<Method> methods;
-
-    includes.push_back("angelscript.h");
 
     for (int i = 2; i < argc; ++i) {
         string filename(argv[i]);
@@ -237,7 +233,7 @@ int main(int argc, char** argv) {
     }
 
     outFile << "\n";
-    outFile << "void _RegisterGeneratedScript(asIScriptEngine * as) {\n";
+    outFile << "void _RegisterGeneratedScript() {\n";
 
     for (auto& type : types) {
         outFile << type;

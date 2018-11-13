@@ -1,8 +1,6 @@
 #ifndef SCRIPT_HOST_HPP
 #define SCRIPT_HOST_HPP
 
-#include <angelscript.h>
-
 #include <string>
 using std::string;
 
@@ -20,17 +18,7 @@ public:
 
     void Run();
 
-    asIScriptEngine * GetEngine() { return _as; }
-
 private:
-
-	asIScriptContext * GetContext();
-	void ReturnContext(asIScriptContext * asCtx);
-
-    asIScriptEngine * _as;
-    asIScriptFunction * _asMain;
-
-	vector<asIScriptContext *> _asContexts;
 
 };
 
