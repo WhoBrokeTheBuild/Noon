@@ -1,0 +1,131 @@
+
+TARGET_INCLUDE_DIRECTORIES(
+    ${_ENGINE_TARGET} PUBLIC
+    ${CMAKE_CURRENT_LIST_DIR}/inc
+)
+
+FILE(GLOB_RECURSE _ENGINE_INCLUDES RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR}/inc/*.hpp ${CMAKE_CURRENT_LIST_DIR}/inc/*.h)
+FILE(GLOB_RECURSE _ENGINE_SOURCES  RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp ${CMAKE_CURRENT_LIST_DIR}/src/*.c)
+
+SET(_ENGINE_GENERATED_SOURCE ${CMAKE_BINARY_DIR}/Noon-Engine.gen.cpp)
+ADD_CUSTOM_COMMAND(
+    OUTPUT ${_ENGINE_GENERATED_SOURCE}
+    COMMAND ${_PREPROC_TARGET} ${_ENGINE_GENERATED_SOURCE} ${_ENGINE_INCLUDES} ${_ENGINE_SOURCES}
+    DEPENDS ${_ENGINE_INCLUDES} ${_ENGINE_SOURCES} ${_PREPROC_TARGET}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
+TARGET_SOURCES(
+    ${_ENGINE_TARGET} PRIVATE
+    ${_ENGINE_INCLUDES}
+    ${_ENGINE_SOURCES}
+    ${_ENGINE_GENERATED_SOURCE}
+)
+
+# SFML
+ExternalProject_Add(
+    depend-sfml
+    GIT_REPOSITORY    "https://github.com/SFML/SFML"
+    GIT_TAG           "2.5.x"
+    GIT_SHALLOW       TRUE
+    SOURCE_DIR        "${CMAKE_BINARY_DIR}/depend/SFML"
+    BINARY_DIR        "${CMAKE_BINARY_DIR}/depend/SFML"
+    CMAKE_ARGS        -DSFML_BUILD_AUDIO=OFF
+                      -DSFML_BUILD_NETWORK=OFF
+                      -DSFML_BUILD_EXAMPLES=OFF
+                      -DSFML_BUILD_DOC=OFF
+                      -DSFML_INSTALL_PKGCONFIG_FILES=OFF
+					  -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=${CMAKE_BINARY_DIR}
+					  -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=${CMAKE_BINARY_DIR}
+                      -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=${CMAKE_BINARY_DIR}
+    UPDATE_COMMAND    ""
+    INSTALL_COMMAND   ""
+    TEST_COMMAND      ""
+)
+
+ADD_DEPENDENCIES(
+    ${_ENGINE_TARGET}
+    depend-sfml
+)
+
+TARGET_INCLUDE_DIRECTORIES(
+    ${_ENGINE_TARGET} PUBLIC
+    ${CMAKE_BINARY_DIR}/depend/SFML/include
+)
+
+IF(WIN32)
+    TARGET_LINK_LIBRARIES(
+        ${_ENGINE_TARGET}
+		debug sfml-graphics-d
+		debug sfml-system-d
+		debug sfml-window-d
+		optimized sfml-graphics
+		optimized sfml-system
+		optimized sfml-window
+	)
+ELSE()
+    TARGET_LINK_LIBRARIES(
+        ${_ENGINE_TARGET}
+		sfml-graphics
+		sfml-system
+		sfml-window
+	)
+ENDIF()
+
+
+# AngelScript
+ExternalProject_Add(
+    depend-angelscript
+    GIT_REPOSITORY    "https://github.com/urho3d/AngelScript.git"
+    GIT_TAG           "master"
+    GIT_SHALLOW       TRUE
+    SOURCE_DIR        "${CMAKE_BINARY_DIR}/depend/AngelScript"
+    BINARY_DIR        "${CMAKE_BINARY_DIR}/depend/AngelScript"
+    SOURCE_SUBDIR     "sdk/angelscript/projects/cmake"
+    CMAKE_ARGS        -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=${CMAKE_BINARY_DIR}
+					  -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=${CMAKE_BINARY_DIR}
+                      -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=${CMAKE_BINARY_DIR}
+    UPDATE_COMMAND    ""
+    INSTALL_COMMAND   ""
+    TEST_COMMAND      ""
+)
+
+SET(_ANGELSCRIPT_SOURCES
+    ${CMAKE_BINARY_DIR}/depend/AngelScript/sdk/add_on/datetime/datetime.cpp
+    ${CMAKE_BINARY_DIR}/depend/AngelScript/sdk/add_on/scriptarray/scriptarray.cpp
+    ${CMAKE_BINARY_DIR}/depend/AngelScript/sdk/add_on/scriptstdstring/scriptstdstring.cpp
+)
+
+ADD_CUSTOM_COMMAND(
+    OUTPUT ${_ANGELSCRIPT_SOURCES}
+    COMMAND ${CMAKE_COMMAND} --build . --target depend-angelscript
+    DEPENDS depend-angelscript
+)
+
+TARGET_SOURCES(
+    ${_ENGINE_TARGET} PRIVATE
+    ${_ANGELSCRIPT_SOURCES}
+)
+
+ADD_DEPENDENCIES(
+    ${_ENGINE_TARGET}
+    depend-angelscript
+)
+
+TARGET_INCLUDE_DIRECTORIES(
+    ${_ENGINE_TARGET} PUBLIC
+    ${CMAKE_BINARY_DIR}/depend/AngelScript/sdk
+    ${CMAKE_BINARY_DIR}/depend/AngelScript/sdk/angelscript/include
+)
+
+TARGET_LINK_LIBRARIES(
+    ${_ENGINE_TARGET}
+    angelscript
+)
+
+IF(NOT WIN32)
+    TARGET_LINK_LIBRARIES(
+        ${_ENGINE_TARGET}
+        pthread
+    )
+ENDIF()
