@@ -19,14 +19,12 @@ public:
 
     Player()
         : Actor() {
-        SetPosition(Vector2f(100.0f, 100.0f));
         _shape.setSize(Vector2f(50.0f, 50.0f));
         _shape.setFillColor(Color::Red);
 
         _script.SetOwner(this);
         _script.LoadFile("assets/test.py");
 
-        SetRotation(45.0f);
         _script.Run();
     }
 
