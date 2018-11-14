@@ -33,14 +33,14 @@ const regex ScriptClassRegex("(.*)SCRIPT_CLASS\\((.*)\\)");
 const regex ScriptMethodRegex("(.*)SCRIPT_METHOD\\((.+?),(.+?),(.*)\\)");
 const regex DefinitionRegex("(\\w+)\\s(\\w+)\\((.*)\\)");
 
-const string ClassDefTemplate = R"(
+const char * ClassDefTemplate = R"(
 struct {0}Type {
     PyObject_HEAD
     {0} * _ptr;
 };
 )";
 
-const string ClassDataTemplate = R"(
+const char * ClassDataTemplate = R"(
 static PyMethodDef {0}_methods[] = {
 {1}
     {nullptr, nullptr, 0, nullptr}
@@ -98,7 +98,7 @@ static PyTypeObject {0}_type = {
 };
 )";
 
-const string ClassImplTemplate = R"(
+const char * ClassImplTemplate = R"(
     {0}_type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&{0}_type) == 0) {
         Py_INCREF(&{0}_type);
@@ -106,17 +106,17 @@ const string ClassImplTemplate = R"(
     }
 )";
 
-const string MethodDefTemplate = R"(    {"{1}", func_{0}_{1}, {2}, nullptr},
+const char * MethodDefTemplate = R"(    {"{1}", func_{0}_{1}, {2}, nullptr},
 )";
 
-const string MethodImplTemplate = R"(
+const char * MethodImplTemplate = R"(
 static PyObject * func_{0}_{1}(PyObject * self, PyObject * args) {
     {0} * type = (({0}Type *)self)->_ptr;
 {2}
 }
 )";
 
-const string ParseArgTemplate = R"(    {0} {1};
+const char * ParseArgTemplate = R"(    {0} {1};
     if (!PyArg_ParseTuple(args, "{3}", {2})) {
         return nullptr;
     }
@@ -275,7 +275,7 @@ int main(int argc, char** argv) {
             }
 
             classes.push_back(Class{
-                .Name = name,
+                name,
             });
         }
 
@@ -303,10 +303,10 @@ int main(int argc, char** argv) {
             vector<string> args;
 
             functions.push_back(Function{
-                .Name = name,
-                .ReturnType = returnType,
-                .FuncName = funcName,
-                .Args = args,
+                name,
+                returnType,
+                funcName,
+                args,
             });
         }
 
@@ -363,10 +363,10 @@ int main(int argc, char** argv) {
             }
 
             methods[c].push_back(Method{
-                .Name = name,
-                .ReturnType = returnType,
-                .FuncName = funcName,
-                .Args = args,
+                name,
+                returnType,
+                funcName,
+                args,
             });
         }
     }
