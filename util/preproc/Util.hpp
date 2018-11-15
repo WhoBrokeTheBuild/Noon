@@ -9,7 +9,7 @@ using std::regex_replace;
 using std::string;
 using std::isspace;
 
-#include <varargs.h>
+#include <cstdarg>
 
 static inline void ltrim(string &s) {
     s.erase(s.begin(), find_if(s.begin(), s.end(), [](int ch) {
@@ -31,7 +31,9 @@ static inline void trim(string &s) {
 static inline string indexed_replace(const char * cstr, ...) {
     va_list args;
 	va_start(args, cstr);
-	va_arg(args, const char *); //?
+#if defined(WIN32)
+	va_arg(args, const char *);
+#endif
 
 	string str(cstr);
 

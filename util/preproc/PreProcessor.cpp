@@ -37,6 +37,7 @@ const char * ClassDefTemplate = R"(
 struct {0}Type {
     PyObject_HEAD
     {0} * _ptr;
+    std::unique_ptr<{0}> _uptr;
 };
 )";
 
@@ -96,6 +97,13 @@ static PyTypeObject {0}_type = {
     0                                         /* tp_del */
 #endif
 };
+
+PyObject * new_{0}Type({0} * ptr) {
+    {0}Type * obj = ({0}Type *)PyType_GenericNew(&{0}_type, NULL, NULL);
+    obj->_ptr = ptr;
+    Py_INCREF(obj);
+    return (PyObject *)obj;
+}
 )";
 
 const char * ClassImplTemplate = R"(
@@ -107,6 +115,15 @@ const char * ClassImplTemplate = R"(
 )";
 
 const char * MethodDefTemplate = R"(    {"{1}", func_{0}_{1}, {2}, nullptr},
+)";
+
+const char * FunctionDefTemplate = R"(    {"{1}", func_{1}, {2}, nullptr},
+)";
+
+const char * FunctionImplTemplate = R"(
+static PyObject * func_{0}(PyObject * self, PyObject * args) {
+{1}
+}
 )";
 
 const char * MethodImplTemplate = R"(
@@ -139,6 +156,88 @@ struct Method {
     string FuncName;
     vector<string> Args;
 };
+
+string GetWrapperFunction(const Function& f) {
+    string code = "";
+
+    const vector<string>& args = f.Args;
+    const string& rt = f.ReturnType;
+
+    string argVars = "";
+    for (size_t i = 0; i < args.size(); ++i) {
+        string aName = "arg" + to_string(i);
+
+        if (args[i] == "int") {
+            code += indexed_replace(ParseArgTemplate, "int", aName.c_str(), ("&" + aName).c_str(), "i");
+            argVars += aName + ",";
+        }
+        else if (args[i] == "long") {
+            code += indexed_replace(ParseArgTemplate, "long", aName.c_str(), ("&" + aName).c_str(), "l");
+            argVars += aName + ",";
+        }
+        else if (args[i] == "float") {
+            code += indexed_replace(ParseArgTemplate, "float", aName.c_str(), ("&" + aName).c_str(), "f");
+            argVars += aName + ",";
+        }
+        else if (args[i] == "double") {
+            code += indexed_replace(ParseArgTemplate, "double", aName.c_str(), ("&" + aName).c_str(), "d");
+            argVars += aName + ",";
+        }
+        else if (args[i] == "bool") {
+            code += indexed_replace(ParseArgTemplate, "unsigned char", aName.c_str(), ("&" + aName).c_str(), "b");
+            argVars += "(" + aName + " == 0),";
+        }
+        else if (args[i] == "string") {
+            code += indexed_replace(ParseArgTemplate, "const char *", aName.c_str(), ("&" + aName).c_str(), "s");
+            argVars += "string(" + aName + "),";
+        }
+        else if (args[i] == "vec2f") {
+            code += indexed_replace(ParseArgTemplate, "Vector2f", aName.c_str(), ("&" + aName + ".x, &" + aName + ".y").c_str(), "ff");
+            argVars += aName + ",";
+        }
+        else if (args[i] == "vec2i") {
+            code += indexed_replace(ParseArgTemplate, "Vector2i", aName.c_str(), ("&" + aName + ".x, &" + aName + ".y").c_str(), "ii");
+            argVars += aName + ",";
+        }
+    }
+
+    if (!argVars.empty()) {
+        argVars.pop_back();
+    }
+
+    if (rt == "void") {
+        code += "    " + f.Name + "(" + argVars + ");\n"
+                "    Py_RETURN_NONE;";
+    } else {
+        code += "    auto value = " + f.Name + "(" + argVars + ");\n";
+        if (rt == "int" || rt == "long") {
+            code += "    return PyLong_FromLong(value);";
+        }
+        else if (rt == "float" || rt == "double") {
+            code += "    return PyFloat_FromDouble(value);";
+        }
+        else if (rt == "bool") {
+            code += "    return (value ? Py_True : Py_False);";
+        }
+        else if (rt == "string") {
+            code += "    return PyUnicode_FromString(value.c_str());";
+        }
+        else if (rt == "vec2f") {
+            code += "    PyObject * ret = PyTuple_New(2);\n"
+                    "    PyTuple_SET_ITEM(ret, 0, PyFloat_FromDouble(value.x));\n"
+                    "    PyTuple_SET_ITEM(ret, 1, PyFloat_FromDouble(value.y));\n"
+                    "    return ret;";
+        }
+        else if (rt == "vec2i") {
+            code += "    PyObject * ret = PyTuple_New(2);\n"
+                    "    PyTuple_SET_ITEM(ret, 0, PyLong_FromLong(value.x));\n"
+                    "    PyTuple_SET_ITEM(ret, 1, PyLong_FromLong(value.y));\n"
+                    "    return ret;";
+        }
+    }
+
+    return indexed_replace(FunctionImplTemplate, f.FuncName.c_str(), code.c_str());
+}
 
 string GetWrapperMethod(const Class& c, const Method& m) {
     string code = "";
@@ -217,6 +316,9 @@ string GetWrapperMethod(const Class& c, const Method& m) {
                     "    PyTuple_SET_ITEM(ret, 1, PyLong_FromLong(value.y));\n"
                     "    return ret;";
         }
+        else { // Assume it's a type
+            code += "    return new_" + rt + "Type();";
+        }
     }
 
     return indexed_replace(MethodImplTemplate, c.Name.c_str(), m.FuncName.c_str(), code.c_str());
@@ -240,6 +342,7 @@ int main(int argc, char** argv) {
     unordered_map<string, vector<Method>> methods;
 
     includes.push_back("Python.h");
+    includes.push_back("memory");
 
     for (int i = 2; i < argc; ++i) {
         string filename(argv[i]);
@@ -383,6 +486,20 @@ int main(int argc, char** argv) {
         outFile << "#include <" << inc << ">\n";
     }
 
+    for (auto& f : functions) {
+        outFile << GetWrapperFunction(f);
+    }
+
+    outFile << "static PyMethodDef global_functions[] = {\n";
+
+    for (auto& f : functions) {
+        outFile << indexed_replace(FunctionDefTemplate,
+            f.Name.c_str(), (f.Args.empty() ? "METH_NOARGS" : "METH_VARARGS"));
+    }
+
+    outFile << "    {nullptr, nullptr, 0, nullptr}\n"
+            << "};\n";
+
     for (auto& c : classes) {
         outFile << indexed_replace(ClassDefTemplate, c.Name.c_str());
 
@@ -408,7 +525,8 @@ int main(int argc, char** argv) {
     }
 
     outFile << "\n";
-    outFile << "void _Script_InitGen(PyObject * mod) {\n";
+    outFile << "void _Script_InitGen(PyObject * mod) {\n"
+            << "    PyModule_AddFunctions(mod, global_functions);\n";
 
     for (auto& c : classes) {
         outFile << indexed_replace(ClassImplTemplate, c.Name.c_str());

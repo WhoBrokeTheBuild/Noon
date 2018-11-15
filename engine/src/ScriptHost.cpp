@@ -87,12 +87,8 @@ PyMODINIT_FUNC PyInit_noon() {
 }
 
 void ScriptHost::SetOwner(Actor * actor) {
-    ActorType * obj = (ActorType *)PyType_GenericNew(&Actor_type, NULL, NULL);
-    obj->_ptr = actor;
-    Py_INCREF(obj);
-
     PyObject * mod = PyImport_GetModule(PyUnicode_FromString("__main__"));
-    PyObject_SetAttr(mod, PyUnicode_FromString("this"), (PyObject *)obj);
+    PyObject_SetAttr(mod, PyUnicode_FromString("this"), new_ActorType(actor));
 }
 
 ScriptHost::ScriptHost() {

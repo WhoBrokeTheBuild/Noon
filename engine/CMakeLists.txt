@@ -91,7 +91,7 @@ IF(WIN32)
     SET(PYTHON_BUILD_COMMAND1 cmd /c PCbuild\\build.bat -c Debug -t Build -p ${ARCH})
     SET(PYTHON_BUILD_COMMAND2 cmd /c PCbuild\\build.bat -c Release -t Build -p ${ARCH})
 ELSE()
-    SET(PYTHON_CONFIGURE_COMMAND "./configure")
+    SET(PYTHON_CONFIGURE_COMMAND ./configure --enable-shared)
     SET(PYTHON_BUILD_COMMAND1 make)
 ENDIF()
 
@@ -117,8 +117,8 @@ ADD_DEPENDENCIES(
 
 TARGET_INCLUDE_DIRECTORIES(
     ${_ENGINE_TARGET} PUBLIC
+    ${PYTHON_DIR}
     ${PYTHON_DIR}/Include
-    ${PYTHON_DIR}/PC
 )
 
 IF(WIN32)
@@ -146,5 +146,6 @@ IF(WIN32)
 ELSE()
     TARGET_LINK_LIBRARIES(
         ${_ENGINE_TARGET}
+        ${PYTHON_DIR}/libpython3.7m.so
 	)
 ENDIF()

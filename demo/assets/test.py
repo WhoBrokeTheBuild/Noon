@@ -7,6 +7,6 @@ if 'this' not in globals() or type(this) != noon.Actor:
 this.set_name("Player")
 print(this.get_name())
 
-this.set_position(100, 100)
+this.set_position(200, 200)
 this.set_scale(2, 2)
 this.set_rotation(45.0)
