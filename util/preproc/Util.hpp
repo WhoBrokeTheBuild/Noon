@@ -31,9 +31,6 @@ static inline void trim(string &s) {
 static inline string indexed_replace(const char * cstr, ...) {
     va_list args;
 	va_start(args, cstr);
-#if defined(WIN32)
-	va_arg(args, const char *);
-#endif
 
 	string str(cstr);
 

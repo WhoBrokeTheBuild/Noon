@@ -127,17 +127,27 @@ IF(WIN32)
     ELSEIF(CMAKE_SIZEOF_VOID_P EQUAL 4)
         SET(ARCH "win32")
     ENDIF()
+    TARGET_INCLUDE_DIRECTORIES(
+        ${_ENGINE_TARGET} PUBLIC
+        ${PYTHON_DIR}/PC
+    )
     TARGET_LINK_LIBRARIES(
         ${_ENGINE_TARGET}
         debug python37_d.lib
         optimized python37.lib
     )
-    ADD_CUSTOM_TARGET(depend-python-copy
+    ADD_CUSTOM_COMMAND(
+        OUTPUT ${CMAKE_BINARY_DIR}/.python-copied
         COMMAND ${CMAKE_COMMAND} -E copy ${PYTHON_DIR}/PCbuild/${ARCH}/python37_d.lib ${CMAKE_BINARY_DIR}/$(Configuration)/python37_d.lib
         COMMAND ${CMAKE_COMMAND} -E copy ${PYTHON_DIR}/PCbuild/${ARCH}/python37.lib ${CMAKE_BINARY_DIR}/$(Configuration)/python37.lib
         COMMAND ${CMAKE_COMMAND} -E copy ${PYTHON_DIR}/PCbuild/${ARCH}/python37_d.dll ${CMAKE_BINARY_DIR}/$(Configuration)/python37_d.dll
         COMMAND ${CMAKE_COMMAND} -E copy ${PYTHON_DIR}/PCbuild/${ARCH}/python37.dll ${CMAKE_BINARY_DIR}/$(Configuration)/python37.dll
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${PYTHON_DIR}/Lib ${CMAKE_BINARY_DIR}/$(Configuration)/Lib
+        COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_BINARY_DIR}/.python-copied
+    )
+    ADD_CUSTOM_TARGET(
+        depend-python-copy
+        DEPENDS ${CMAKE_BINARY_DIR}/.python-copied
     )
     ADD_DEPENDENCIES(
         ${_ENGINE_TARGET}

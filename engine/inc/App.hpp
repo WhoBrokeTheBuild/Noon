@@ -19,6 +19,7 @@ using std::vector;
 #include "Actor.hpp"
 #include "ScriptHost.hpp"
 
+SCRIPT_CLASS(App)
 class App
 {
 public:

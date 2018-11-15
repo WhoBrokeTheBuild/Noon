@@ -37,7 +37,6 @@ const char * ClassDefTemplate = R"(
 struct {0}Type {
     PyObject_HEAD
     {0} * _ptr;
-    std::unique_ptr<{0}> _uptr;
 };
 )";
 
@@ -315,9 +314,6 @@ string GetWrapperMethod(const Class& c, const Method& m) {
                     "    PyTuple_SET_ITEM(ret, 0, PyLong_FromLong(value.x));\n"
                     "    PyTuple_SET_ITEM(ret, 1, PyLong_FromLong(value.y));\n"
                     "    return ret;";
-        }
-        else { // Assume it's a type
-            code += "    return new_" + rt + "Type();";
         }
     }
 
