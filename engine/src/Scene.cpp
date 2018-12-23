@@ -4,17 +4,26 @@ void Scene::Update() {
     for (auto& a : _actors) {
         a->Update();
     }
+    for (auto& sys : _systems) {
+        sys.second->Update();
+    }
 }
 
 void Scene::Draw(RenderWindow * ctx) {
     for (auto& a : _actors) {
         a->Draw(ctx);
     }
+    for (auto& sys : _systems) {
+        sys.second->Draw(ctx);
+    }
 }
 
 void Scene::HandleEvent(Event * evt) {
     for (auto& a : _actors) {
         a->HandleEvent(evt);
+    }
+    for (auto& sys : _systems) {
+        sys.second->HandleEvent(evt);
     }
 }
 
