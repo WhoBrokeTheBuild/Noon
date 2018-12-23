@@ -19,13 +19,11 @@ public:
 
     Player()
         : Actor() {
-        _shape.setSize(Vector2f(50.0f, 50.0f));
+        _shape.setSize({ 50.0f, 50.0f });
         _shape.setFillColor(Color::Red);
-
-        _script.SetOwner(this);
-        _script.LoadFile("assets/test.py");
-
-        _script.Run();
+        SetPosition({ 200.0f, 200.0f });
+        SetRotation(45.0f);
+        SetScale({ 2.0f, 2.0f });
     }
 
     virtual void Draw(RenderWindow * ctx) override {
@@ -44,7 +42,6 @@ public:
 private:
 
     RectangleShape _shape;
-    ScriptHost _script;
 
 };
 
