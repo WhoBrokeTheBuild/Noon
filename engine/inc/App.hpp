@@ -13,11 +13,8 @@ using std::make_unique;
 using std::unique_ptr;
 using std::move;
 
-#include <vector>
-using std::vector;
-
-#include "Actor.hpp"
-#include "ScriptHost.hpp"
+#include "Script.hpp"
+#include "Scene.hpp"
 
 SCRIPT_CLASS(App)
 class App
@@ -31,17 +28,18 @@ public:
     virtual void Start();
 
     virtual void Update();
+
     virtual void Draw();
 
-    virtual void Add(unique_ptr<Actor>&& actor);
+    virtual void SetScene(unique_ptr<Scene>&& scene);
 
 private:
 
     static App * _Inst;
 
-    unique_ptr<RenderWindow> _sfWindow;
+    unique_ptr<Scene> _scene;
 
-    vector<unique_ptr<Actor>> _actors;
+    unique_ptr<RenderWindow> _sfWindow;
 
 };
 

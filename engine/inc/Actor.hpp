@@ -1,7 +1,7 @@
 #ifndef ACTOR_HPP
 #define ACTOR_HPP
 
-#include <Script.hpp>
+#include "Script.hpp"
 
 #include <SFML/Graphics.hpp>
 using sf::RenderWindow;

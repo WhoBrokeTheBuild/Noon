@@ -53,7 +53,9 @@ int main(int argc, char** argv)
     App app;
 #endif
 
-    app.Add(unique_ptr<Actor>(new Player));
+    auto s = make_unique<Scene>();
+    s->Add(unique_ptr<Actor>(new Player));
+    app.SetScene(move(s));
 
     app.Start();
 
