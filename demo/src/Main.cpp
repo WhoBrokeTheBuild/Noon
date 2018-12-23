@@ -20,7 +20,7 @@ public:
 
     Player()
         : Actor() {
-        Add(unique_ptr<Component>(new RectComponent({ 50.0f, 50.0f }, Color::Red)));
+        AddComponent(unique_ptr<Component>(new RectComponent({ 50.0f, 50.0f }, Color::Red)));
         SetPosition({ 200.0f, 200.0f });
         SetRotation(45.0f);
         SetScale({ 2.0f, 2.0f });
@@ -45,7 +45,9 @@ int main(int argc, char** argv)
 #endif
 
     auto s = make_unique<Scene>();
-    s->Add(unique_ptr<Actor>(new Player));
+
+    s->AddActor(unique_ptr<Actor>(new Player));
+
     app.SetScene(move(s));
 
     app.Start();

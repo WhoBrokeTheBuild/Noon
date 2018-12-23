@@ -33,7 +33,7 @@ public:
 
     virtual void HandleEvent(Event * evt);
 
-    virtual void Add(unique_ptr<Component>&& comp);
+    virtual void AddComponent(unique_ptr<Component>&& comp);
 
     Scene * GetScene();
 

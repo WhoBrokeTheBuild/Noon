@@ -19,7 +19,7 @@ void Actor::HandleEvent(Event * evt) {
     }
 }
 
-void Actor::Add(unique_ptr<Component>&& comp) {
+void Actor::AddComponent(unique_ptr<Component>&& comp) {
     comp->SetActor(this);
     _components.push_back(move(comp));
 }
