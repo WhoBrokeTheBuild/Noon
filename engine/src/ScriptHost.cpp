@@ -1,6 +1,6 @@
 #include "ScriptHost.hpp"
-#include <App.hpp>
-#include <Actor.hpp>
+#include "App.hpp"
+#include "Actor.hpp"
 
 #include <Python.h>
 #include <frameobject.h>

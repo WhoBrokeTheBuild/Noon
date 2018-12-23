@@ -14,25 +14,24 @@ class Actor;
 class Component {
 public:
 
-    Component(Actor * a) : _actor(a) { }
+    Component() = default;
 
-    Actor* GetActor() { 
-        return _actor; 
-    }
+    virtual ~Component() = default;
 
-    void SetActor(Actor * a) {
-        _actor = a;
-    }
+    Actor* GetActor();
 
-    virtual void Update();
+    void SetActor(Actor * actor);
 
-    virtual void Draw(RenderWindow * ctx);
+    virtual void Update() { }
 
-    virtual void HandleEvent(Event * evt);
+    virtual void Draw(RenderWindow * ctx) { }
+
+    virtual void HandleEvent(Event * evt) { }
 
 private:
 
-    Actor* _actor;
+    Actor * _actor;
+
 };
 
 #endif //COMPONENT_HPP

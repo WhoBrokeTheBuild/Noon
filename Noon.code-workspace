@@ -5,6 +5,9 @@
 		}
 	],
 	"settings": {
-		"python.pythonPath": "C:\\Users\\Ben\\AppData\\Local\\Programs\\Python\\Python35-32\\python.exe"
+		"files.associations": {
+			"vector": "cpp",
+			"string": "cpp"
+		}
 	}
 }

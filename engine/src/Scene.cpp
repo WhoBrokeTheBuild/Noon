@@ -19,5 +19,6 @@ void Scene::HandleEvent(Event * evt) {
 }
 
 void Scene::Add(unique_ptr<Actor>&& actor) {
+    actor->SetScene(this);
     _actors.push_back(move(actor));
 }

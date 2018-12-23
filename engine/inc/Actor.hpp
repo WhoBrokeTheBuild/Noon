@@ -9,32 +9,35 @@ using sf::RenderWindow;
 using sf::Vector2f;
 using sf::Event;
 
-#include <string>
-using std::string;
+#include <vector>
+using std::vector;
+
+#include <memory>
+using std::unique_ptr;
+
+class Scene;
 
 SCRIPT_CLASS(Actor)
 class Actor
 {
 public:
 
-    Actor();
+    Actor() = default;
+
+    virtual ~Actor() = default;
 
     SCRIPT_METHOD(Actor, Update, "void update()")
-    virtual void Update() { }
+    virtual void Update();
 
-    virtual void Draw(RenderWindow * ctx) { }
+    virtual void Draw(RenderWindow * ctx);
 
-    virtual void HandleEvent(Event * evt) { }
+    virtual void HandleEvent(Event * evt);
 
-    SCRIPT_METHOD(Actor, GetName, "string get_name()")
-    string GetName() {
-        return _name;
-    }
+    virtual void Add(unique_ptr<Component>&& comp);
 
-    SCRIPT_METHOD(Actor, SetName, "void set_name(string)")
-    void SetName(const string& value) {
-        _name = value;
-    }
+    Scene * GetScene();
+
+    void SetScene(Scene * scene);
 
     SCRIPT_METHOD(Actor, GetPosition, "vec2f get_position()")
     virtual Vector2f GetPosition() {
@@ -68,12 +71,14 @@ public:
 
 private:
 
-    string _name = "Actor";
+    Scene * _scene = nullptr;
 
     Vector2f _position = Vector2f(0.0f, 0.0f);
     Vector2f _scale    = Vector2f(1.0f, 1.0f);
 
     float _rotation = 0.0f;
+
+    vector<unique_ptr<Component>> _components;
 
 };
 
