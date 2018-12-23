@@ -2,6 +2,7 @@
 #define ACTOR_HPP
 
 #include "Script.hpp"
+#include "Component.hpp"
 
 #include <SFML/Graphics.hpp>
 using sf::RenderWindow;
