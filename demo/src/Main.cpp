@@ -12,6 +12,7 @@ using sf::Event;
 
 #include <memory>
 using std::unique_ptr;
+using std::make_unique;
 
 class Player : public Actor
 {
@@ -19,18 +20,10 @@ public:
 
     Player()
         : Actor() {
-        _shape.setSize({ 50.0f, 50.0f });
-        _shape.setFillColor(Color::Red);
+        Add(unique_ptr<Component>(new RectComponent({ 50.0f, 50.0f }, Color::Red)));
         SetPosition({ 200.0f, 200.0f });
         SetRotation(45.0f);
         SetScale({ 2.0f, 2.0f });
-    }
-
-    virtual void Draw(RenderWindow * ctx) override {
-        _shape.setPosition(GetPosition());
-        _shape.setRotation(GetRotation());
-        _shape.setScale(GetScale());
-        ctx->draw(_shape);
     }
 
     virtual void HandleEvent(Event * evt) override {
@@ -40,8 +33,6 @@ public:
     }
 
 private:
-
-    RectangleShape _shape;
 
 };
 
