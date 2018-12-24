@@ -10,6 +10,7 @@ using sf::Event;
 using std::string;
 
 class Actor;
+class Scene;
 
 class Component {
 public:
@@ -20,13 +21,15 @@ public:
 
     Actor* GetActor();
 
-    void SetActor(Actor * actor);
+    virtual void SetActor(Actor * actor);
 
     virtual void Update() { }
 
     virtual void Draw(RenderWindow * ctx) { }
 
     virtual void HandleEvent(Event * evt) { }
+
+    virtual void OnSceneChanged(Scene * scene) { }
 
 private:
 

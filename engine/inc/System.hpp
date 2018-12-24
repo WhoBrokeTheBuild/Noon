@@ -34,6 +34,8 @@ public:
     template <typename T>
     vector<T*> GetComponentsByType();
 
+    virtual void OnComponentAdded() { }
+
 private:
 
     vector<Component *> _components;
@@ -46,10 +48,11 @@ template <typename T>
 void System::AddComponent(Component * comp) {
     auto id = type_index(typeid(T));
     _components.push_back(comp);
-    if (_componentsByType.find(id) != _componentsByType.end()) {
+    if (_componentsByType.find(id) == _componentsByType.end()) {
         _componentsByType[id] = vector<Component *>();
     }
     _componentsByType[id].push_back(comp);
+    OnComponentAdded();
 }
 
 template <typename T>

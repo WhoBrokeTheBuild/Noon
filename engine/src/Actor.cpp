@@ -30,4 +30,7 @@ Scene * Actor::GetScene() {
 
 void Actor::SetScene(Scene * scene) {
     _scene = scene;
+    for (auto& c : _components) {
+        c->OnSceneChanged(scene);
+    }
 }

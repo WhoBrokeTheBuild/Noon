@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 using sf::RectangleShape;
 using sf::Vector2f;
+using sf::Vertex;
 using sf::Color;
 using sf::Event;
 
@@ -14,30 +15,57 @@ using sf::Event;
 using std::unique_ptr;
 using std::make_unique;
 
-class Player : public Actor
+#include <vector>
+using std::vector;
+
+#include <cstdlib>
+#include <ctime>
+
+class MeshComponent : public RectComponent 
 {
 public:
 
-    Player()
-        : Actor() {
-        AddComponent(unique_ptr<Component>(new RectComponent({ 50.0f, 50.0f }, Color::Red)));
-        SetPosition({ 200.0f, 200.0f });
-        SetRotation(45.0f);
-        SetScale({ 2.0f, 2.0f });
+    MeshComponent() 
+        : RectComponent(Vector2f(10.0f, 10.0f), sf::Color::Red) 
+    { }
+
+    virtual void OnSceneChanged(Scene * scene) override;
+
+};
+
+class MeshSystem : public System {
+public:
+
+    virtual void OnComponentAdded() override {
+        _meshComponents = GetComponentsByType<MeshComponent>();
     }
 
-    virtual void HandleEvent(Event * evt) override {
-        if (evt->type == Event::KeyPressed) {
-            printf("Key Pressed %d\n", evt->key.code);
+    virtual void Draw(RenderWindow * ctx) override {
+        vector<Vertex> lines;
+        for (size_t i = 0; i < _meshComponents.size(); ++i) {
+            for (size_t j = 0; j < _meshComponents.size(); ++j) {
+                lines.push_back(Vertex(_meshComponents[i]->GetActor()->GetPosition()));
+                lines.push_back(Vertex(_meshComponents[j]->GetActor()->GetPosition()));
+            }
         }
+        ctx->draw(lines.data(), lines.size(), sf::Lines);
     }
 
 private:
 
+    vector<MeshComponent *> _meshComponents;
+
 };
+
+void MeshComponent::OnSceneChanged(Scene * scene) {
+    auto sys = scene->GetSystemByType<MeshSystem>();
+    sys->AddComponent<MeshComponent>(this);
+}
 
 int main(int argc, char** argv)
 {
+    srand((unsigned int)time(0));
+
 #if defined(EDITOR_BUILD)
     Editor app;
 #else
@@ -46,7 +74,18 @@ int main(int argc, char** argv)
 
     auto s = make_unique<Scene>();
 
-    s->AddActor(unique_ptr<Actor>(new Player));
+    s->AddSystem<MeshSystem>(make_unique<MeshSystem>());
+    
+    for (int i = 0; i < 10; i++) {
+        auto a = make_unique<Actor>();
+        a->SetPosition(Vector2f(
+            float(rand() % 1024),
+            float(rand() % 768)
+        ));
+        auto mc = make_unique<MeshComponent>();
+        a->AddComponent(move(mc));
+        s->AddActor(move(a));
+    }
 
     app.SetScene(move(s));
 
