@@ -1,7 +1,7 @@
-#include <Noon.hpp>
+#include <Noon/Noon.hpp>
 
 #if defined(EDITOR_BUILD)
-#include <Editor.hpp>
+#include <Noon/Editor.hpp>
 #endif
 
 #include <SFML/Graphics.hpp>
@@ -64,6 +64,9 @@ void MeshComponent::OnSceneChanged(Scene * scene) {
 
 int main(int argc, char** argv)
 {
+    UNUSED(argc);
+    UNUSED(argv);
+    
     srand((unsigned int)time(0));
 
 #if defined(EDITOR_BUILD)

@@ -1,6 +1,8 @@
 #ifndef COMPONENT_HPP
 #define COMPONENT_HPP
 
+#include <Noon/Macros.hpp>
+
 #include <SFML/Graphics.hpp>
 using sf::RenderWindow;
 using sf::Vector2f;
@@ -25,11 +27,11 @@ public:
 
     virtual void Update() { }
 
-    virtual void Draw(RenderWindow * ctx) { }
+    virtual void Draw(RenderWindow * ctx) { UNUSED(ctx); }
 
-    virtual void HandleEvent(Event * evt) { }
+    virtual void HandleEvent(Event * evt) { UNUSED(evt); }
 
-    virtual void OnSceneChanged(Scene * scene) { }
+    virtual void OnSceneChanged(Scene * scene) { UNUSED(scene); }
 
 private:
 

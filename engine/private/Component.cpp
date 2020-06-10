@@ -1,6 +1,6 @@
-#include "Component.hpp"
-#include "Actor.hpp"
-#include "Scene.hpp"
+#include <Noon/Component.hpp>
+#include <Noon/Actor.hpp>
+#include <Noon/Scene.hpp>
 
 Actor * Component::GetActor() { 
     return _actor; 

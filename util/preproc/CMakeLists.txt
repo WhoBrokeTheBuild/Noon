@@ -1,13 +1,25 @@
-TARGET_INCLUDE_DIRECTORIES(
-    ${_PREPROC_TARGET} PUBLIC
-    ${CMAKE_CURRENT_LIST_DIR}
+
+ADD_EXECUTABLE(NoonPreprocessor "")
+
+FILE(
+    GLOB_RECURSE
+    _PRIVATE
+    private/*.h
+    private/*.hh
+    private/*.hpp
+    private/*.c
+    private/*.cc
+    private/*.cpp
 )
 
-FILE(GLOB_RECURSE _PREPROC_INCLUDES RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR}/*.hpp ${CMAKE_CURRENT_LIST_DIR}/*.h)
-FILE(GLOB_RECURSE _PREPROC_SOURCES  RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR}/*.cpp ${CMAKE_CURRENT_LIST_DIR}/*.c)
-
 TARGET_SOURCES(
-    ${_PREPROC_TARGET} PRIVATE
-    ${_PREPROC_INCLUDES}
-    ${_PREPROC_SOURCES}
+    NoonPreprocessor
+    PRIVATE
+        ${_PRIVATE}
+)
+
+TARGET_INCLUDE_DIRECTORIES(
+    NoonPreprocessor
+    PRIVATE
+        private
 )

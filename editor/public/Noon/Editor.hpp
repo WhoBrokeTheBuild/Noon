@@ -1,7 +1,7 @@
 #ifndef EDITOR_HPP
 #define EDITOR_HPP
 
-#include <Noon.hpp>
+#include <Noon/Noon.hpp>
 
 class Editor : public App
 {

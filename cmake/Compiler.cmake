@@ -1,17 +1,14 @@
 
-IF(CMAKE_COMPILER_IS_GNUXX OR ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
     SET(CMAKE_CXX_FLAGS "-std=c++14")
     ADD_DEFINITIONS(-D_XOPEN_SOURCE=700)
     ADD_COMPILE_OPTIONS(-Wall -Wextra)
-ELSEIF(MSVC)
-    INCLUDE(ProcessorCount)
-    ProcessorCount(PROC_COUNT)
-    MESSAGE("Building with ${PROC_COUNT} cores")
 
-    ADD_DEFINITIONS(/D_CRT_SECURE_NO_WARNINGS)
-    SET(CMAKE_CXX_FLAGS 
-        "${CMAKE_CXX_FLAGS} /EHsc /MP${PROC_COUNT}")
-    SET(CMAKE_EXE_LINKER_FLAGS
-        "${CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:LIBCMT")
+# Configure Visual Studio exception handling
+IF(MSVC)
+    # Disable Default Exception Handling
+    STRING(REPLACE "/EHsc" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+
+    # Disable Basic Runtime Checks
+    STRING(REGEX REPLACE "/RTC(su|[1su])" "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS}")
+    STRING(REGEX REPLACE "/RTC(su|[1su])" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS}")
 ENDIF()
-

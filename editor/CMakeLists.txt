@@ -1,18 +1,76 @@
-TARGET_INCLUDE_DIRECTORIES(
-    ${_EDITOR_TARGET} PUBLIC
-    ${CMAKE_CURRENT_LIST_DIR}/inc
+
+ADD_LIBRARY(NoonEditor SHARED "")
+
+FILE(
+    GLOB_RECURSE
+    _PUBLIC
+    public/*.h
+    public/*.hh
+    public/*.hpp
+    public/*.c
+    public/*.cc
+    public/*.cpp
 )
 
-FILE(GLOB_RECURSE _EDITOR_INCLUDES RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR}/inc/*.hpp ${CMAKE_CURRENT_LIST_DIR}/inc/*.h)
-FILE(GLOB_RECURSE _EDITOR_SOURCES  RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp ${CMAKE_CURRENT_LIST_DIR}/src/*.c)
+FILE(
+    GLOB_RECURSE
+    _PRIVATE
+    private/*.h
+    private/*.hh
+    private/*.hpp
+    private/*.c
+    private/*.cc
+    private/*.cpp
+)
 
 TARGET_SOURCES(
-    ${_EDITOR_TARGET} PRIVATE
-    ${_EDITOR_INCLUDES}
-    ${_EDITOR_SOURCES}
+    NoonEditor
+    PRIVATE
+        ${_PUBLIC}
+        ${_PRIVATE}
+        ${_GENERATED_HEADER}
+)
+
+TARGET_INCLUDE_DIRECTORIES(
+    NoonEditor
+    PUBLIC
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/public>
+    PRIVATE
+        private
 )
 
 TARGET_LINK_LIBRARIES(
-    ${_EDITOR_TARGET}
-    ${_ENGINE_TARGET}
+    NoonEditor
+    NoonEngine
+)
+
+TARGET_COMPILE_DEFINITIONS(
+    NoonEditor
+    PRIVATE
+        # Disable Visual Studio "not secure" warnings
+        $<$<CXX_COMPILER_ID:MSVC>:_CRT_SECURE_NO_WARNINGS>
+)
+
+TARGET_COMPILE_OPTIONS(
+    NoonEditor
+    PRIVATE
+        # Disable unknown pragmas warning, C++ exceptions
+        $<$<CXX_COMPILER_ID:GNU>:-Wall -Wno-unknown-pragmas -fno-exceptions>
+        $<$<CXX_COMPILER_ID:Clang>:-Wall -Wno-unknown-pragmas -fno-exceptions>
+        $<$<CXX_COMPILER_ID:MSVC>:/MP /wd4068 /EHsc- /GR->
+)
+
+TARGET_COMPILE_FEATURES(
+    NoonEditor
+    PRIVATE
+        cxx_std_17
+)
+
+SET_TARGET_PROPERTIES(
+    NoonEditor
+    PROPERTIES
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED ON
+        CXX_EXTENSIONS OFF
 )

@@ -48,53 +48,53 @@ static PyMethodDef {0}_methods[] = {
 
 static PyTypeObject {0}_type = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "noon.{0}",                                /* tp_name */
-    sizeof({0}Type),                        /* tp_basicsize */
-    0,                                        /*tp_itemsize*/
-    0,                                        /* tp_dealloc */
-    0,                                        /* tp_print */
-    0,                                        /* tp_getattr */
-    0,                                        /* tp_setattr */
-    0,                                        /* tp_compare */
-    0,                                        /* tp_repr */
-    0,                                        /* tp_as_number */
-    0,                                        /* tp_as_sequence */
-    0,                                        /* tp_as_mapping */
-    0,                                        /* tp_hash */
-    0,                                        /* tp_call */
-    0,                                        /* tp_str */
-    0,                                        /* tp_getattro */
-    0,                                        /* tp_setattro */
-    0,                                        /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
-    0,                                        /* tp_doc */
-    0,                                        /* tp_traverse */
-    0,                                        /* tp_clear */
-    0,                                        /* tp_richcompare */
-    0,                                        /* tp_weaklistoffset */
-    0,                                        /* tp_iter */
-    0,                                        /* tp_iternext */
-    {0}_methods,                         /* tp_methods */
-    0,                                        /* tp_members */
-    0,                                        /* tp_getset */
-    0,                                        /* tp_base */
-    0,                                        /* tp_dict */
-    0,                                        /* tp_descr_get */
-    0,                                        /* tp_descr_set */
-    0,                                        /* tp_dictoffset */
-    0,                                        /* tp_init */
-    0,                                        /* tp_alloc */
-    0, // filled in with type_new             /* tp_new */
-    0, // filled in with __PyObject_GC_Del    /* tp_free */
-    0,                                        /* tp_is_gc */
-    0,                                        /* tp_bases */
-    0,                                        /* tp_mro */
-    0,                                        /* tp_cache */
-    0,                                        /* tp_subclasses */
-    0,                                        /* tp_weaklist */
-#if PYTHON_API_VERSION >= 1012
-    0                                         /* tp_del */
-#endif
+    "noon.{0}",                               // tp_name
+    sizeof({0}Type),                          // tp_basicsize
+    0,                                        // tp_itemsize
+    0,                                        // tp_dealloc
+    0,                                        // tp_print
+    0,                                        // tp_getattr
+    0,                                        // tp_setattr
+    0,                                        // tp_compare
+    0,                                        // tp_repr
+    0,                                        // tp_as_number
+    0,                                        // tp_as_sequence
+    0,                                        // tp_as_mapping
+    0,                                        // tp_hash
+    0,                                        // tp_call
+    0,                                        // tp_str
+    0,                                        // tp_getattro
+    0,                                        // tp_setattro
+    0,                                        // tp_as_buffer
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, // tp_flags
+    0,                                        // tp_doc
+    0,                                        // tp_traverse
+    0,                                        // tp_clear
+    0,                                        // tp_richcompare
+    0,                                        // tp_weaklistoffset
+    0,                                        // tp_iter
+    0,                                        // tp_iternext
+    {0}_methods,                              // tp_methods
+    0,                                        // tp_members
+    0,                                        // tp_getset
+    0,                                        // tp_base
+    0,                                        // tp_dict
+    0,                                        // tp_descr_get
+    0,                                        // tp_descr_set
+    0,                                        // tp_dictoffset
+    0,                                        // tp_init
+    0,                                        // tp_alloc
+    0, // filled in with type_new             // tp_new
+    0, // filled in with __PyObject_GC_Del    // tp_free
+    0,                                        // tp_is_gc
+    0,                                        // tp_bases
+    0,                                        // tp_mro
+    0,                                        // tp_cache
+    0,                                        // tp_subclasses
+    0,                                        // tp_weaklist
+    0,                                        // tp_del
+    0,                                        // tp_version_tag
+    0,                                        // tp_finalize
 };
 
 PyObject * new_{0}Type({0} * ptr) {
@@ -121,12 +121,16 @@ const char * FunctionDefTemplate = R"(    {"{1}", func_{1}, {2}, nullptr},
 
 const char * FunctionImplTemplate = R"(
 static PyObject * func_{0}(PyObject * self, PyObject * args) {
+    UNUSED(self);
+    UNUSED(args);
 {1}
 }
 )";
 
 const char * MethodImplTemplate = R"(
 static PyObject * func_{0}_{1}(PyObject * self, PyObject * args) {
+    UNUSED(self);
+    UNUSED(args);
     {0} * type = (({0}Type *)self)->_ptr;
 {2}
 }
@@ -339,6 +343,7 @@ int main(int argc, char** argv) {
 
     includes.push_back("Python.h");
     includes.push_back("memory");
+    includes.push_back("Noon/Macros.hpp");
 
     for (int i = 2; i < argc; ++i) {
         string filename(argv[i]);
@@ -350,9 +355,9 @@ int main(int argc, char** argv) {
         if (filename.find(".h") != string::npos) {
             auto last = filename.rfind('/');
             if (last == string::npos) {
-                includes.push_back(filename);
+                includes.push_back("Noon/" + filename);
             } else {
-                includes.push_back(filename.substr(last + 1));
+                includes.push_back("Noon/" + filename.substr(last + 1));
             }
         }
 

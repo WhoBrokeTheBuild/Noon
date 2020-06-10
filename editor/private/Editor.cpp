@@ -1,4 +1,4 @@
-#include "Editor.hpp"
+#include <Noon/Editor.hpp>
 
 Editor * Editor::_Inst = nullptr;
 

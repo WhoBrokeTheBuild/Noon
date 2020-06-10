@@ -1,6 +1,8 @@
 #ifndef SCRIPT_HOST_HPP
 #define SCRIPT_HOST_HPP
 
+#include <Noon/Macros.hpp>
+
 #include <string>
 using std::string;
 
@@ -12,6 +14,8 @@ class Actor;
 class ScriptHost
 {
 public:
+
+    DISALLOW_COPY_AND_ASSIGN(ScriptHost)
 
     ScriptHost();
 	virtual ~ScriptHost();

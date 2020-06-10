@@ -1,6 +1,6 @@
-#include "ScriptHost.hpp"
-#include "App.hpp"
-#include "Actor.hpp"
+#include <Noon/ScriptHost.hpp>
+#include <Noon/App.hpp>
+#include <Noon/Actor.hpp>
 
 #include <Python.h>
 #include <frameobject.h>
@@ -17,6 +17,8 @@ using sf::Vector2u;
 #include "Engine.gen.hpp"
 
 static PyObject * noon_info(PyObject * self, PyObject * args) {
+    UNUSED(self);
+
     const char * msg;
 
     if (!PyArg_ParseTuple(args, "s", &msg)) {
@@ -31,6 +33,7 @@ static PyObject * noon_info(PyObject * self, PyObject * args) {
 }
 
 static PyObject * noon_warn(PyObject * self, PyObject * args) {
+    UNUSED(self);
     const char * msg;
 
     if (!PyArg_ParseTuple(args, "s", &msg)) {
@@ -45,6 +48,7 @@ static PyObject * noon_warn(PyObject * self, PyObject * args) {
 }
 
 static PyObject * noon_error(PyObject * self, PyObject * args) {
+    UNUSED(self);
     const char * msg;
 
     if (!PyArg_ParseTuple(args, "s", &msg)) {
@@ -67,10 +71,14 @@ static PyMethodDef NoonMethods[] = {
 
 static struct PyModuleDef NoonModule = {
     PyModuleDef_HEAD_INIT,
-    "noon",
-    nullptr,
-    -1,
-    NoonMethods
+    "noon",             // m_name
+    nullptr,            // m_doc
+    -1,                 // m_size
+    NoonMethods,        // m_methods
+    nullptr,            // m_slots
+    nullptr,            // m_traverse
+    nullptr,            // m_clear
+    nullptr,            // m_free
 };
 
 PyMODINIT_FUNC PyInit_noon() {

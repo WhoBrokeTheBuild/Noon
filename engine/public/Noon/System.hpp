@@ -1,7 +1,8 @@
 #ifndef SYSTEM_HPP
 #define SYSTEM_HPP
 
-#include "Component.hpp"
+#include <Noon/Macros.hpp>
+#include <Noon/Component.hpp>
 
 #include <typeinfo>
 using std::type_info;
@@ -18,11 +19,16 @@ using std::unordered_map;
 class System {
 public:
 
+    DISALLOW_COPY_AND_ASSIGN(System)
+
+    System() = default;
+    virtual ~System() = default;
+
     virtual void Update() { }
 
-    virtual void Draw(RenderWindow * ctx) { }
+    virtual void Draw(RenderWindow * ctx) { UNUSED(ctx); }
 
-    virtual void HandleEvent(Event * evt) { }
+    virtual void HandleEvent(Event * evt) { UNUSED(evt); }
 
     template <typename T>
     void AddComponent(Component * comp);

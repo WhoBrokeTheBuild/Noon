@@ -1,5 +1,5 @@
-#include "RectComponent.hpp"
-#include "Actor.hpp"
+#include <Noon/RectComponent.hpp>
+#include <Noon/Actor.hpp>
 
 void RectComponent::Draw(RenderWindow * ctx)
 {

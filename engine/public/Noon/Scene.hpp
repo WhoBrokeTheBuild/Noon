@@ -29,6 +29,8 @@ class Scene
 {
 public:
 
+    virtual ~Scene() = default;
+
     virtual void Update();
 
     virtual void Draw(RenderWindow * ctx);

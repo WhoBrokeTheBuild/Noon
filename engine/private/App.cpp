@@ -1,4 +1,4 @@
-#include "App.hpp"
+#include <Noon/App.hpp>
 
 App * App::_Inst = nullptr;
 

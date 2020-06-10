@@ -1,4 +1,4 @@
-#include "Scene.hpp"
+#include <Noon/Scene.hpp>
 
 void Scene::Update() {
     for (auto& a : _actors) {
