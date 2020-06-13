@@ -14,7 +14,7 @@ matrix:
         apt:
           sources:
           - sourceline: 'ppa:ubuntu-toolchain-r/test'
-          packages: [ 'g++-7', 'xorg-dev', 'libglu1-mesa-dev', 'libsfml-dev', 'libpython3-dev' ]
+          packages: [ 'g++-7', 'xorg-dev', 'libglu1-mesa-dev', 'libsfml-dev', 'libpython3.8-dev' ]
       env: CMAKE_BUILD_TYPE=DEBUG
 
     - name: "GCC Release"
@@ -24,7 +24,7 @@ matrix:
         apt:
           sources:
           - sourceline: 'ppa:ubuntu-toolchain-r/test'
-          packages: [ 'g++-7', 'xorg-dev', 'libglu1-mesa-dev', 'libsfml-dev', 'libpython3-dev' ]
+          packages: [ 'g++-7', 'xorg-dev', 'libglu1-mesa-dev', 'libsfml-dev', 'libpython3.8-dev' ]
       env: CMAKE_BUILD_TYPE=RELEASE
 
     - name: "Clang Debug"
@@ -34,7 +34,7 @@ matrix:
         apt:
           sources:
           - sourceline: 'ppa:ubuntu-toolchain-r/test'
-          packages: [ 'clang-6.0', 'xorg-dev', 'libglu1-mesa-dev', 'libsfml-dev', 'libpython3-dev' ]
+          packages: [ 'clang-6.0', 'xorg-dev', 'libglu1-mesa-dev', 'libsfml-dev', 'libpython3.8-dev' ]
       env: CMAKE_BUILD_TYPE=DEBUG
 
     - name: "Clang Release"
@@ -44,7 +44,7 @@ matrix:
         apt:
           sources:
           - sourceline: 'ppa:ubuntu-toolchain-r/test'
-          packages: [ 'clang-6.0', 'xorg-dev', 'libglu1-mesa-dev', 'libsfml-dev', 'libpython3-dev' ]
+          packages: [ 'clang-6.0', 'xorg-dev', 'libglu1-mesa-dev', 'libsfml-dev', 'libpython3.8-dev' ]
       env: CMAKE_BUILD_TYPE=RELEASE
 
 before_install:
