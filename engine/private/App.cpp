@@ -1,10 +1,17 @@
 #include <Noon/App.hpp>
+#include <Noon/Script.hpp>
 
 App * App::_Inst = nullptr;
 
 App::App() {
     _Inst = this;
     _sfWindow.reset(new RenderWindow(VideoMode(1024, 768), "Noon"));
+
+    InitScript();
+}
+
+App::~App() {
+    TermScript();
 }
 
 void App::Start() {

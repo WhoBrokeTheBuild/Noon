@@ -25,6 +25,8 @@ public:
 
     App();
 
+    virtual ~App();
+
     virtual void Start();
 
     virtual void Update();

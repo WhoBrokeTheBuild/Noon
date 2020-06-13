@@ -1,13 +1,7 @@
-#include <Noon/ScriptHost.hpp>
-#include <Noon/App.hpp>
-#include <Noon/Actor.hpp>
+#include <Noon/Script.hpp>
 
 #include <Python.h>
 #include <frameobject.h>
-
-#include <fstream>
-using std::ifstream;
-using std::istreambuf_iterator;
 
 #include <SFML/System.hpp>
 using sf::Vector2f;
@@ -81,54 +75,65 @@ static struct PyModuleDef NoonModule = {
     nullptr,            // m_free
 };
 
-PyMODINIT_FUNC PyInit_noon() {
-    PyObject * mod;
+PyMODINIT_FUNC PyInit_noon()
+{
+    PyObject * module = nullptr;
 
-    mod = PyModule_Create(&NoonModule);
-    if (!mod) {
+    module = PyModule_Create(&NoonModule);
+    if (!module) {
         return nullptr;
     }
 
-    _Script_InitGen(mod);
+    _Script_InitGen(module);
 
-    return mod;
+    return module;
 }
 
-void ScriptHost::SetOwner(Actor * actor) {
-    PyObject * mod = PyImport_GetModule(PyUnicode_FromString("__main__"));
-    PyObject_SetAttr(mod, PyUnicode_FromString("this"), new_ActorType(actor));
+void PrintStackTrace()
+{
+    if (PyErr_Occurred()) {
+        PyObject * pyType = nullptr;
+        PyObject * pyValue = nullptr;
+        PyObject * pyTrace = nullptr;
+
+        PyErr_Fetch(&pyType, &pyValue, &pyTrace);
+        PyErr_NormalizeException(&pyType, &pyValue, &pyTrace);
+
+        PyObject * pyValueRepr = PyObject_Repr(pyValue);
+        if (pyValueRepr) {
+            PyObject * pyValueStr = PyUnicode_AsEncodedString(pyValueRepr, "utf-8", "~E~");
+
+            fprintf(stderr,
+                "[ERRO] Exception %s\n", 
+                PyBytes_AS_STRING(pyValueStr));
+
+            Py_XDECREF(pyValueStr);
+            Py_XDECREF(pyValueRepr);
+        }
+        else {
+            PyObject * pyTypeName = PyObject_GetAttrString(pyType, "__name__");
+            PyObject * pyTypeNameStr = PyUnicode_AsEncodedString(pyTypeName, "utf-8", "~E~");
+
+            fprintf(stderr,
+                "[ERRO] Exception %s\n", 
+                PyBytes_AS_STRING(pyTypeNameStr));
+
+            Py_XDECREF(pyTypeNameStr);
+            Py_XDECREF(pyTypeName);
+        }
+    }
 }
 
-ScriptHost::ScriptHost() {
+bool InitScript()
+{
     PyImport_AppendInittab("noon", PyInit_noon);
     Py_Initialize();
     PyImport_ImportModule("noon");
-}
-
-ScriptHost::~ScriptHost() {
-    Py_Finalize();
-}
-
-bool ScriptHost::LoadFile(const string& filename) {
-    ifstream file;
-
-	file.open(filename);
-
-    if (!file.is_open()) {
-        fprintf(stderr, "Could not open file '%s'\n", filename.c_str());
-        return false;
-    }
-
-    string script((istreambuf_iterator<char>(file)),
-                  istreambuf_iterator<char>());
-
-	file.close();
-
-    PyRun_SimpleString(script.c_str());
 
     return true;
 }
 
-void ScriptHost::Run() {
-
+void TermScript()
+{
+    Py_Finalize();
 }

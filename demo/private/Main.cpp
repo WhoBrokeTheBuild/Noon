@@ -36,11 +36,13 @@ public:
 class MeshSystem : public System {
 public:
 
-    virtual void OnComponentAdded() override {
+    virtual void OnComponentAdded() override
+    {
         _meshComponents = GetComponentsByType<MeshComponent>();
     }
 
-    virtual void Draw(RenderWindow * ctx) override {
+    virtual void Draw(RenderWindow * ctx) override
+    {
         vector<Vertex> lines;
         for (size_t i = 0; i < _meshComponents.size(); ++i) {
             for (size_t j = 0; j < _meshComponents.size(); ++j) {
@@ -57,10 +59,38 @@ private:
 
 };
 
-void MeshComponent::OnSceneChanged(Scene * scene) {
+void MeshComponent::OnSceneChanged(Scene * scene)
+{
     auto sys = scene->GetSystemByType<MeshSystem>();
     sys->AddComponent<MeshComponent>(this);
 }
+
+class Player : public Actor
+{
+public:
+
+    Player()
+        : Actor()
+    {
+        _shape.setSize(Vector2f(50.f, 50.f));
+        _shape.setFillColor(Color::Blue);
+
+        AddComponent(make_unique<ScriptComponent>("assets/test.py"));
+    }
+
+    virtual void Draw(RenderWindow * ctx) override
+    {
+        _shape.setPosition(GetPosition());
+        _shape.setRotation(GetRotation());
+        _shape.setScale(GetScale());
+        ctx->draw(_shape);
+    }
+    
+private:
+
+    RectangleShape _shape;
+
+};
 
 int main(int argc, char** argv)
 {
@@ -76,6 +106,8 @@ int main(int argc, char** argv)
 #endif
 
     auto s = make_unique<Scene>();
+
+    s->AddActor(make_unique<Player>());
 
     s->AddSystem<MeshSystem>(make_unique<MeshSystem>());
     

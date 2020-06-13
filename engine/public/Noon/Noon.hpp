@@ -5,7 +5,7 @@
 #include "Actor.hpp"
 #include "Scene.hpp"
 #include "Script.hpp"
-#include "ScriptHost.hpp"
+#include "ScriptComponent.hpp"
 #include "System.hpp"
 #include "Component.hpp"
 #include "RectComponent.hpp"

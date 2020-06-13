@@ -7,4 +7,8 @@
 #define SCRIPT_CLASS(Class)
 #define SCRIPT_METHOD(Class, Func, Def)
 
+bool InitScript();
+
+void TermScript();
+
 #endif // SCRIPT_HPP

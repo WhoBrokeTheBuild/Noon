@@ -8,4 +8,5 @@ Actor * Component::GetActor() {
 
 void Component::SetActor(Actor * actor) {
     _actor = actor;
+    OnActorChanged(_actor);
 }

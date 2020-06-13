@@ -31,6 +31,8 @@ public:
 
     virtual void HandleEvent(Event * evt) { UNUSED(evt); }
 
+    virtual void OnActorChanged(Actor * actor) { UNUSED(actor); }
+
     virtual void OnSceneChanged(Scene * scene) { UNUSED(scene); }
 
 private:

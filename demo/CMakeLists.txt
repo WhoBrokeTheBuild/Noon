@@ -61,6 +61,20 @@ ADD_CUSTOM_TARGET(
 )
 
 ADD_CUSTOM_TARGET(
+    valgrind
+    COMMAND valgrind $<TARGET_FILE:NoonDemo>
+    DEPENDS NoonDemo
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+ADD_CUSTOM_TARGET(
+    gdb
+    COMMAND gdb --args $<TARGET_FILE:NoonDemo>
+    DEPENDS NoonDemo
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+ADD_CUSTOM_TARGET(
     run-editor
     COMMAND $<TARGET_FILE:NoonDemoEditor>
     DEPENDS NoonDemoEditor
