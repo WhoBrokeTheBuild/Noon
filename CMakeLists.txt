@@ -46,9 +46,21 @@ IF(NOT TARGET SFML::SFML)
     ADD_LIBRARY(SFML::SFML INTERFACE IMPORTED)
     SET_TARGET_PROPERTIES(
         SFML::SFML PROPERTIES
+        # Use SFML_LIBRARIES and SFML_INCLUDE_DIR for the FindSFML.cmake variant
         INTERFACE_LINK_LIBRARIES "${SFML_LIBRARIES}"
         INTERFACE_INCLUDE_DIRECTORIES "${SFML_INCLUDE_DIR}"
     )
+
+    # Link the targets for the SFMLConfig.cmake variant
+    IF(TARGET sfml-system)
+        TARGET_LINK_LIBRARIES(SFML::SFML INTERFACE sfml-system)
+    ENDIF()
+    IF(TARGET sfml-window)
+        TARGET_LINK_LIBRARIES(SFML::SFML INTERFACE sfml-window)
+    ENDIF()
+    IF(TARGET sfml-graphics)
+        TARGET_LINK_LIBRARIES(SFML::SFML INTERFACE sfml-graphics)
+    ENDIF()
 ENDIF()
 
 FIND_PACKAGE(Python3 3.8 COMPONENTS Development REQUIRED)
