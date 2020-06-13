@@ -1,11 +1,8 @@
 language: cpp
-sudo: false
+os: linux
 dist: bionic
 
-notifications:
-  slack: c0demonk3ys:gnjXYwuoMOBnffg9h8YnlLyE
-
-matrix:
+jobs:
   include:
     - name: "GCC Debug"
       os: linux
@@ -48,6 +45,7 @@ before_install:
   - env
 
 script:
+  - mkdir "$TRAVIS_BUILD_DIR/build"
   - cd "$TRAVIS_BUILD_DIR/build"
   - export CMAKE_MODULE_PATH=/usr/share/SFML/cmake/Modules/
   - cmake -DVERBOSE_LOGGING=ON -DBUILD_DEMO=ON -DBUILD_TESTS=ON -G "Unix Makefiles" "$TRAVIS_BUILD_DIR"
