@@ -57,5 +57,6 @@ before_install:
 
 script:
   - cd "$TRAVIS_BUILD_DIR/build"
+  - export CMAKE_MODULE_PATH=/usr/share/SFML/cmake/Modules/
   - cmake -DVERBOSE_LOGGING=ON -DBUILD_DEMOS=ON -DBUILD_TESTS=ON -G "Unix Makefiles" "$TRAVIS_BUILD_DIR"
   - make -l all test
