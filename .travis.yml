@@ -12,9 +12,7 @@ matrix:
       compiler: gcc
       addons:
         apt:
-          sources:
-          - sourceline: 'ppa:ubuntu-toolchain-r/test'
-          packages: [ 'g++-7', 'xorg-dev', 'libglu1-mesa-dev', 'libsfml-dev', 'libpython3.8-dev' ]
+          packages: [ 'libsfml-dev', 'libpython3.8-dev' ]
       env: CMAKE_BUILD_TYPE=DEBUG
 
     - name: "GCC Release"
@@ -22,9 +20,7 @@ matrix:
       compiler: gcc
       addons:
         apt:
-          sources:
-          - sourceline: 'ppa:ubuntu-toolchain-r/test'
-          packages: [ 'g++-7', 'xorg-dev', 'libglu1-mesa-dev', 'libsfml-dev', 'libpython3.8-dev' ]
+          packages: [ 'libsfml-dev', 'libpython3.8-dev' ]
       env: CMAKE_BUILD_TYPE=RELEASE
 
     - name: "Clang Debug"
@@ -32,9 +28,7 @@ matrix:
       compiler: clang
       addons:
         apt:
-          sources:
-          - sourceline: 'ppa:ubuntu-toolchain-r/test'
-          packages: [ 'clang-6.0', 'xorg-dev', 'libglu1-mesa-dev', 'libsfml-dev', 'libpython3.8-dev' ]
+          packages: [ 'libsfml-dev', 'libpython3.8-dev' ]
       env: CMAKE_BUILD_TYPE=DEBUG
 
     - name: "Clang Release"
@@ -42,9 +36,7 @@ matrix:
       compiler: clang
       addons:
         apt:
-          sources:
-          - sourceline: 'ppa:ubuntu-toolchain-r/test'
-          packages: [ 'clang-6.0', 'xorg-dev', 'libglu1-mesa-dev', 'libsfml-dev', 'libpython3.8-dev' ]
+          packages: [ 'libsfml-dev', 'libpython3.8-dev' ]
       env: CMAKE_BUILD_TYPE=RELEASE
 
 before_install:
@@ -58,5 +50,5 @@ before_install:
 script:
   - cd "$TRAVIS_BUILD_DIR/build"
   - export CMAKE_MODULE_PATH=/usr/share/SFML/cmake/Modules/
-  - cmake -DVERBOSE_LOGGING=ON -DBUILD_DEMOS=ON -DBUILD_TESTS=ON -G "Unix Makefiles" "$TRAVIS_BUILD_DIR"
-  - make -l all test
+  - cmake -DVERBOSE_LOGGING=ON -DBUILD_DEMO=ON -DBUILD_TESTS=ON -G "Unix Makefiles" "$TRAVIS_BUILD_DIR"
+  - make -l all
