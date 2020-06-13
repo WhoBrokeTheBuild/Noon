@@ -17,17 +17,11 @@ PROJECT(Noon)
 ### Options
 ###
 
-OPTION(VERBOSE_LOGGING "Build Dusk with Verbose Logging enabled" OFF)
-IF(VERBOSE_LOGGING)
-    ADD_DEFINITIONS(-DENABLE_VERBOSE_LOGGING)
-ENDIF()
+OPTION(VERBOSE_LOGGING "Build with Verbose Logging enabled" OFF)
 
 OPTION(BUILD_DEMO "Build Demo" ON)
 
 OPTION(BUILD_TESTS "Build Tests" OFF)
-IF(BUILD_TESTS)
-    ENABLE_TESTING()
-ENDIF()
 
 ###
 ### Configuration
@@ -37,6 +31,10 @@ INCLUDE(Compiler)
 
 # Allow for custom organization of files in VisualStudio
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
+
+IF(BUILD_TESTS)
+    ENABLE_TESTING()
+ENDIF()
 
 ###
 ### Dependencies

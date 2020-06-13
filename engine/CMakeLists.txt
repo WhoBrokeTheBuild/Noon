@@ -42,6 +42,13 @@ TARGET_SOURCES(
         ${_GENERATED_HEADER}
 )
 
+FOREACH(file ${_PUBLIC} ${_PRIVATE})
+    FILE(RELATIVE_PATH file_path ${CMAKE_CURRENT_SOURCE_DIR} ${file})
+    GET_FILENAME_COMPONENT(folder ${file_path} DIRECTORY)
+    FILE(TO_NATIVE_PATH ${folder} folder)
+    SOURCE_GROUP(${folder} FILES ${file})
+ENDFOREACH()
+
 TARGET_INCLUDE_DIRECTORIES(
     NoonEngine
     PUBLIC
